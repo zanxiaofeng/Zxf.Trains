@@ -2,7 +2,7 @@ Environment:
 
 	Build Tool: gradle
 
-	IDE: Eclipse Luna
+	IDE: IntelliJ IDEA
 
 Total Design:
 

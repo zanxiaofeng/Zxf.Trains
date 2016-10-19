@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Town {
-	private String name;
-	private List<Route> routes = new ArrayList<Route>();
+    private String name;
+    private List<Route> routes = new ArrayList<>();
 
-	public Town(String name) {
-		this.name = name;
-	}
+    public Town(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public List<Route> getRoutes() {
-		return routes;
-	}
+    public List<Route> getRoutes() {
+        return routes;
+    }
 }

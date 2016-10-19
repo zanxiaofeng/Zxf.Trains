@@ -1,63 +1,43 @@
 package service.map.visitor;
 
 public class StopCheckers {
-	public static StopChecker noStop() {
-		return new StopChecker() {
-			@Override
-			public Boolean shouldStop(TravelRoute travelRoute) {
-				return false;
-			}
-		};
-	}
+    public static StopChecker noStop() {
+        return new StopChecker() {
+            @Override
+            public Boolean shouldStop(TravelRoute travelRoute) {
+                return false;
+            }
+        };
+    }
 
-	public static StopChecker stopWhenThroughaTownTwice() {
-		return new StopChecker() {
+    public static StopChecker stopWhenThroughaTownTwice() {
+        return new StopChecker() {
+            @Override
+            public Boolean shouldStop(TravelRoute travelRoute) {
+                return travelRoute.doesThroughaTownTwice();
+            }
+        };
+    }
 
-			@Override
-			public Boolean shouldStop(TravelRoute travelRoute) {
-				if (travelRoute.getStops() < 1) {
-					return false;
-				}
+    public static StopChecker stopWhenReachMaxStops(final int maxStops) {
+        return new StopChecker() {
+            @Override
+            public Boolean shouldStop(TravelRoute travelRoute) {
+                return travelRoute.doesReachStops(maxStops);
+            }
+        };
+    }
 
-				if (travelRoute.getStartTown()
-						.equals(travelRoute.getLastTown())) {
-					return true;
-				}
+    public static StopChecker stopWhenReachMaxDistance(final int maxDistance) {
+        return new StopChecker() {
+            @Override
+            public Boolean shouldStop(TravelRoute travelRoute) {
+                return travelRoute.doesReachDistance(maxDistance);
+            }
+        };
+    }
 
-				if (travelRoute
-						.getVisitedRoutes()
-						.stream()
-						.limit(travelRoute.getVisitedRoutes().size() - 1)
-						.anyMatch(
-								route -> route.getTo().equals(
-										travelRoute.getLastTown()))) {
-					return true;
-				}
-
-				return false;
-			}
-		};
-	}
-
-	public static StopChecker stopWhenReachMaxStops(final int maxStops) {
-		return new StopChecker() {
-			@Override
-			public Boolean shouldStop(TravelRoute travelRoute) {
-				return travelRoute.getStops() >= maxStops;
-			}
-		};
-	}
-
-	public static StopChecker stopWhenReachMaxDistance(final int maxDistance) {
-		return new StopChecker() {
-			@Override
-			public Boolean shouldStop(TravelRoute travelRoute) {
-				return travelRoute.getDistance() >= maxDistance;
-			}
-		};
-	}
-
-	public static interface StopChecker {
-		Boolean shouldStop(TravelRoute travelRoute);
-	}
+    public static interface StopChecker {
+        Boolean shouldStop(TravelRoute travelRoute);
+    }
 }

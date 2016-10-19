@@ -6,20 +6,20 @@ import java.util.List;
 import service.map.entity.RailroadMap;
 import service.map.entity.Route;
 import service.map.entity.Town;
-import service.map.visitor.Selectors.Selector;
+import service.map.visitor.RouteSelectors.RouteSelector;
 import service.map.visitor.StopCheckers.StopChecker;
 
 public class Visitor {
-	private Selector selector;
+	private RouteSelector routeSelector;
 	private StopChecker stopChecker;
 
-	public Visitor(Selector selector, StopChecker stopChecker) {
-		this.selector = selector;
+	public Visitor(RouteSelector routeSelector, StopChecker stopChecker) {
+		this.routeSelector = routeSelector;
 		this.stopChecker = stopChecker;
 	}
 
 	public List<TravelRoute> visit(RailroadMap map) {
-		Town startTown = selector.selectStartTown(map);
+		Town startTown = routeSelector.selectStartTown(map);
 		if (startTown == null) {
 			return new ArrayList<>();
 		}
@@ -29,7 +29,7 @@ public class Visitor {
 	private List<TravelRoute> visit(TravelRoute travelRoute) {
 		List<TravelRoute> returnRoutes = new ArrayList<>();
 
-		if (selector.isEndTown(travelRoute)) {
+		if (routeSelector.isEndTown(travelRoute)) {
 			returnRoutes.add(travelRoute);
 		}
 
@@ -37,8 +37,9 @@ public class Visitor {
 			return returnRoutes;
 		}
 
-		for (Route route : selector.selectRoutes(travelRoute)) {
-			returnRoutes.addAll(visit(travelRoute.newBranch(route)));
+		for (Route route : routeSelector.selectNextRoutes(travelRoute)) {
+			TravelRoute newBranch = travelRoute.newBranch(route);
+			returnRoutes.addAll(visit(newBranch));
 		}
 
 		return returnRoutes;
