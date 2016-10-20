@@ -16,6 +16,10 @@ public class RailroadMap {
         return towns;
     }
 
+    public Town getTownByName(String name) {
+        return this.towns.getOrDefault(name, null);
+    }
+
     public static RailroadMap create(String mapData) throws Exception {
         Map<String, Town> towns = new HashMap<>();
         Set<String> routes = new HashSet<>();

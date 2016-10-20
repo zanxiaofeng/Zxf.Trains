@@ -27,16 +27,6 @@ public class Route {
         if (travelRoute == null) {
             return null;
         }
-        Stream<String> startTown = Stream.of(travelRoute.getStartTown()
-                .getName());
-        Stream<String> restTowns = travelRoute.getVisitedRoutes().stream()
-                .map(route -> route.getTo().getName());
-
-        List<String> towns = Stream.concat(startTown, restTowns).collect(
-                Collectors.toList());
-
-        List<Integer> weights = travelRoute.getVisitedRoutes().stream()
-                .map(route -> route.getWeight()).collect(Collectors.toList());
-        return new Route(towns, weights);
+        return new Route(travelRoute.getVisitedTownNames(), travelRoute.getVisitedWeights());
     }
 }

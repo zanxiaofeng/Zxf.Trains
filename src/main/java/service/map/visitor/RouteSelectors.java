@@ -25,7 +25,7 @@ public class RouteSelectors {
 
             @Override
             public Boolean isEndTown(TravelRoute travelRoute) {
-                return byStartEnd.isEndTown(travelRoute) && travelRoute.getStops() == endStops;
+                return byStartEnd.isEndTown(travelRoute) && travelRoute.doesReachStops(endStops);
             }
         };
     }
@@ -46,7 +46,7 @@ public class RouteSelectors {
 
             @Override
             public Boolean isEndTown(TravelRoute travelRoute) {
-                return byStartEnd.isEndTown(travelRoute) && !travelRoute.doesReachDistance(maxDistance);
+                return byStartEnd.isEndTown(travelRoute) && !travelRoute.doesReachOrExceedDistance(maxDistance);
             }
         };
     }
@@ -56,7 +56,7 @@ public class RouteSelectors {
 
             @Override
             public Town selectStartTown(RailroadMap map) {
-                return map.getTowns().getOrDefault(startTown, null);
+                return map.getTownByName(startTown);
             }
 
             @Override
@@ -66,43 +66,37 @@ public class RouteSelectors {
 
             @Override
             public Boolean isEndTown(TravelRoute travelRoute) {
-                return travelRoute.getStops() > 0
-                        && travelRoute.getLastTown().getName().equals(endTown);
+                return travelRoute.hasThroughedAtLeastOneTown() && travelRoute.isEndWith(endTown);
             }
         };
     }
 
     public static RouteSelector by(final String routePath) {
         final String[] steps = routePath.split("-");
+        final int stops = steps.length - 1;
+        final String startStep = steps[0];
+        final String endStep = steps[steps.length - 1];
+
         return new RouteSelector() {
 
             @Override
             public Town selectStartTown(RailroadMap map) {
-                return map.getTowns().getOrDefault(steps[0], null);
+                return map.getTownByName(startStep);
             }
 
             @Override
             public List<Route> selectNextRoutes(TravelRoute travelRoute) {
-                if (travelRoute.getStops() >= steps.length - 1) {
+                if (travelRoute.doesReachOrExceedStops(stops)) {
                     return Arrays.asList();
                 }
 
-                String currentStep = steps[travelRoute.getStops() + 1];
-
-                for (Route route : travelRoute.getLastTown().getRoutes()) {
-                    if (route.getTo().getName().equals(currentStep)) {
-                        return Arrays.asList(route);
-                    }
-                }
-
-                return Arrays.asList();
+                String nextStep = steps[travelRoute.getStops() + 1];
+                return travelRoute.getLastTown().selectNextRoutesByNextTownName(nextStep);
             }
 
             @Override
             public Boolean isEndTown(TravelRoute travelRoute) {
-                return travelRoute.getStops() == steps.length - 1
-                        && travelRoute.getLastTown().getName()
-                        .equals(steps[steps.length - 1]);
+                return travelRoute.doesReachStops(stops) && travelRoute.isEndWith(endStep);
             }
         };
     }

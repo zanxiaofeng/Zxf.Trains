@@ -2,6 +2,8 @@ package service.map.visitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import service.map.entity.Route;
 import service.map.entity.Town;
@@ -40,15 +42,19 @@ public class TravelRoute {
     }
 
     public Boolean doesReachStops(int stops) {
+        return this.getStops() == stops;
+    }
+
+    public Boolean doesReachOrExceedStops(int stops) {
         return this.getStops() >= stops;
     }
 
-    public Boolean doesReachDistance(int distance) {
+    public Boolean doesReachOrExceedDistance(int distance) {
         return this.getDistance() >= distance;
     }
 
     public Boolean doesThroughaTownTwice() {
-        if (this.getStops() < 1) {
+        if (!this.hasThroughedAtLeastOneTown()) {
             return false;
         }
 
@@ -58,11 +64,19 @@ public class TravelRoute {
 
         if (this.getVisitedRoutes().stream()
                 .limit(this.getVisitedRoutes().size() - 1)
-                .anyMatch(route -> route.getTo().equals(this.getLastTown()))) {
+                .anyMatch(route -> route.isEndWith(this.getLastTown()))) {
             return true;
         }
 
         return false;
+    }
+
+    public Boolean hasThroughedAtLeastOneTown() {
+        return this.getStops() > 0;
+    }
+
+    public Boolean isEndWith(String townName) {
+        return this.getLastTown().getName().equals(townName);
     }
 
     public TravelRoute newBranch(Route route) {
@@ -70,6 +84,19 @@ public class TravelRoute {
         newRoute.visitedRoutes.addAll(this.visitedRoutes);
         newRoute.visitedRoutes.add(route);
         return newRoute;
+    }
+
+    public List<String> getVisitedTownNames() {
+        Stream<String> startTownName = Stream.of(this.getStartTown().getName());
+        Stream<String> restTownNames = this.getVisitedRoutes().stream()
+                .map(route -> route.getTo().getName());
+        return Stream.concat(startTownName, restTownNames).collect(
+                Collectors.toList());
+    }
+
+    public List<Integer> getVisitedWeights() {
+        return this.getVisitedRoutes().stream()
+                .map(route -> route.getWeight()).collect(Collectors.toList());
     }
 
     public static int compareByDistance(TravelRoute route1, TravelRoute route2) {

@@ -23,7 +23,7 @@ public class StopCheckers {
         return new StopChecker() {
             @Override
             public Boolean shouldStop(TravelRoute travelRoute) {
-                return travelRoute.doesReachStops(maxStops);
+                return travelRoute.doesReachOrExceedStops(maxStops);
             }
         };
     }
@@ -32,7 +32,7 @@ public class StopCheckers {
         return new StopChecker() {
             @Override
             public Boolean shouldStop(TravelRoute travelRoute) {
-                return travelRoute.doesReachDistance(maxDistance);
+                return travelRoute.doesReachOrExceedDistance(maxDistance);
             }
         };
     }

@@ -44,4 +44,18 @@ public class RailroadMapTests {
 					ex.getMessage());
 		}
 	}
+
+	@Test
+	public void testSelectAnExistedTownByName() throws Exception {
+		RailroadMap map = RailroadMap.create("AB15,BC4");
+		Town townB = map.getTownByName("B");
+		assertNotNull(townB);
+	}
+
+	@Test
+	public void testSelectANotExistedTownByName() throws Exception {
+		RailroadMap map = RailroadMap.create("AB15,BC4");
+		Town townB = map.getTownByName("D");
+		assertNull(townB);
+	}
 }
