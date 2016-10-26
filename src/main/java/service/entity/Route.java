@@ -8,15 +8,15 @@ import java.util.stream.Stream;
 
 public class Route {
     private List<String> towns;
-    private List<Integer> weights;
+    private int distance;
 
-    public Route(List<String> towns, List<Integer> weights) {
+    public Route(List<String> towns, int distance) {
         this.towns = towns;
-        this.weights = weights;
+        this.distance = distance;
     }
 
     public int getDistance() {
-        return weights.stream().mapToInt(weight -> weight.intValue()).sum();
+        return this.distance;
     }
 
     public String toString() {
@@ -27,6 +27,6 @@ public class Route {
         if (travelRoute == null) {
             return null;
         }
-        return new Route(travelRoute.getVisitedTownNames(), travelRoute.getVisitedWeights());
+        return new Route(travelRoute.getVisitedTownNames(), travelRoute.getDistance());
     }
 }

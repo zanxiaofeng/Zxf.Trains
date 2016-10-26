@@ -25,6 +25,14 @@ public class TravelRoute {
         return visitedRoutes;
     }
 
+    public List<String> getVisitedTownNames() {
+        Stream<String> startTownName = Stream.of(this.getStartTown().getName());
+        Stream<String> restTownNames = this.getVisitedRoutes().stream()
+                .map(route -> route.getTo().getName());
+        return Stream.concat(startTownName, restTownNames).collect(
+                Collectors.toList());
+    }
+
     public Town getLastTown() {
         if (visitedRoutes.size() == 0) {
             return startTown;
@@ -84,19 +92,6 @@ public class TravelRoute {
         newRoute.visitedRoutes.addAll(this.visitedRoutes);
         newRoute.visitedRoutes.add(route);
         return newRoute;
-    }
-
-    public List<String> getVisitedTownNames() {
-        Stream<String> startTownName = Stream.of(this.getStartTown().getName());
-        Stream<String> restTownNames = this.getVisitedRoutes().stream()
-                .map(route -> route.getTo().getName());
-        return Stream.concat(startTownName, restTownNames).collect(
-                Collectors.toList());
-    }
-
-    public List<Integer> getVisitedWeights() {
-        return this.getVisitedRoutes().stream()
-                .map(route -> route.getWeight()).collect(Collectors.toList());
     }
 
     public static int compareByDistance(TravelRoute route1, TravelRoute route2) {

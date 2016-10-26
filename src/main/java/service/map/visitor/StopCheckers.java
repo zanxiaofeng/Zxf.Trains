@@ -2,39 +2,19 @@ package service.map.visitor;
 
 public class StopCheckers {
     public static StopChecker noStop() {
-        return new StopChecker() {
-            @Override
-            public Boolean shouldStop(TravelRoute travelRoute) {
-                return false;
-            }
-        };
+        return travelRoute -> false;
     }
 
     public static StopChecker stopWhenThroughaTownTwice() {
-        return new StopChecker() {
-            @Override
-            public Boolean shouldStop(TravelRoute travelRoute) {
-                return travelRoute.doesThroughaTownTwice();
-            }
-        };
+        return travelRoute -> travelRoute.doesThroughaTownTwice();
     }
 
     public static StopChecker stopWhenReachMaxStops(final int maxStops) {
-        return new StopChecker() {
-            @Override
-            public Boolean shouldStop(TravelRoute travelRoute) {
-                return travelRoute.doesReachOrExceedStops(maxStops);
-            }
-        };
+        return travelRoute -> travelRoute.doesReachOrExceedStops(maxStops);
     }
 
     public static StopChecker stopWhenReachMaxDistance(final int maxDistance) {
-        return new StopChecker() {
-            @Override
-            public Boolean shouldStop(TravelRoute travelRoute) {
-                return travelRoute.doesReachOrExceedDistance(maxDistance);
-            }
-        };
+        return travelRoute -> travelRoute.doesReachOrExceedDistance(maxDistance);
     }
 
     public static interface StopChecker {
